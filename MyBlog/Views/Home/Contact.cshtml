@@ -1,17 +1,25 @@
 ﻿@{
     ViewBag.Title = "Contact";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+
+@section Header{
+    <header class="masthead" style="background-image: url('../Content/img/contact-bg.jpg')">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                        <h1>Hulk's 旅行筆記</h1>
+                        <span class="subheading">人生就像一場旅行，不必在乎目的地，在乎的，是沿途的風景，以及看風景的心情</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+}
 
 <address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
-
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
+    <abbr title="Phone">Phone: 0988352811</abbr>
+    <br>
+    <strong><span class="glyphicon glyphicon-envelope"></span>Email:</strong> <a href="mailto:hulk75321@hotmail.com">hulk75321@hotmail.com</a>
 </address>

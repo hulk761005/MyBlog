@@ -21,11 +21,12 @@ namespace MyBlog
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
+                      "~/Scripts/clean-blog.min.js",
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/vendor/bootstrap/css/bootstrap.min.css",
+                      "~/Content/clean-blog.min.css"));
         }
     }
 }
