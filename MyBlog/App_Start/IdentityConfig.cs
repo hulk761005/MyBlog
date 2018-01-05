@@ -57,7 +57,7 @@ namespace MyBlog
                 RequireNonLetterOrDigit = true,
                 RequireDigit = true,
                 RequireLowercase = true,
-                RequireUppercase = true,
+                RequireUppercase = false,
             };
 
             // 設定使用者鎖定詳細資料
