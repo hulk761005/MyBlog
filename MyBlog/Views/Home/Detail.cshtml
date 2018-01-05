@@ -6,9 +6,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-10 mx-auto">
-                    <div class="site-heading">
-                        <h1>Hulk's 旅行筆記</h1>
-                        <span class="subheading">人生就像一場旅行，不必在乎目的地，在乎的，是沿途的風景，以及看風景的心情</span>
+                    <div class="post-heading">
+                        <h1>@Html.DisplayFor(model => model.Subject)</h1>
+                        <h2 class="subheading">Problems look mighty small from 150 miles up</h2>
+                        <span class="meta">
+                            Posted by
+                            <a href="#">@Html.DisplayFor(model => model.CreateUser)</a>
+                            on @Html.DisplayFor(model => model.CreateDate)
+                        </span>
                     </div>
                 </div>
             </div>

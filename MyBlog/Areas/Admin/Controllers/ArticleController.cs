@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using MyBlog.Areas.Admin.Models;
 using MyBlog.Models;
+using Microsoft.Security.Application;
 
 namespace MyBlog.Areas.Admin.Controllers
 {
@@ -41,7 +42,8 @@ namespace MyBlog.Areas.Admin.Controllers
                     article.ID = Guid.NewGuid().ToString();
                     article.Subject = model.Subject;
                     article.Summary = model.Summary;
-                    article.ContentText = model.ContentText;
+                    // 過濾 XSS
+                    article.ContentText = Sanitizer.GetSafeHtmlFragment(model.ContentText);
                     article.ViewCount = 0;
                     article.CreateUser = "27f9ede9-bb8f-4d9c-ab20-9d50e59a6567";
                     article.CreateDate = DateTime.Now;
