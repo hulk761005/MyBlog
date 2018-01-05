@@ -13,14 +13,24 @@ namespace MyBlog.Controllers
         public ActionResult Index()
         {
             var listBlog = new List<BlogViewModel>();
-            foreach (var item in db.Article.ToList())
+            var query = from a in db.Article
+                        join b in db.Users on a.CreateUser equals b.Id
+                        select new
+                        {
+                            a.ID,
+                            a.Subject,
+                            a.Summary,
+                            b.UserName,
+                            a.CreateDate
+                        };
+            foreach (var item in query.ToList())
             {
                 var blog = new BlogViewModel()
                 {
                     ID = item.ID,
                     Subject = item.Subject,
                     Summary = item.Summary,
-                    CreateUser = item.CreateUser,
+                    CreateUser = item.UserName,
                     CreateDate = item.CreateDate
                 };
                 listBlog.Add(blog);

@@ -43,9 +43,9 @@ namespace MyBlog.Areas.Admin.Controllers
                     article.Summary = model.Summary;
                     article.ContentText = model.ContentText;
                     article.ViewCount = 0;
-                    article.CreateUser = "b180fb64-983f-4908-8269-3f8a3ae69b08";
+                    article.CreateUser = "27f9ede9-bb8f-4d9c-ab20-9d50e59a6567";
                     article.CreateDate = DateTime.Now;
-                    article.UpdateUser = "b180fb64-983f-4908-8269-3f8a3ae69b08";
+                    article.UpdateUser = "27f9ede9-bb8f-4d9c-ab20-9d50e59a6567";
                     article.UpdateDate = DateTime.Now;
                     db.Article.Add(article);
                     db.SaveChanges();
