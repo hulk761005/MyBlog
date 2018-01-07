@@ -49,9 +49,8 @@ namespace MyBlog.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "電子郵件")]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Display(Name = "登入名稱")]
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -64,6 +63,10 @@ namespace MyBlog.Models
 
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name = "登入名稱")]
+        public string UserName { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "電子郵件")]

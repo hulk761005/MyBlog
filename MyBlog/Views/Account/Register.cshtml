@@ -1,16 +1,32 @@
 ﻿@model MyBlog.Models.RegisterViewModel
-@{
-    ViewBag.Title = "註冊";
+
+@section Header{
+    <header class="masthead" style="background-image: url('../../Content/img/home-bg.jpg')">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                        <h1>Hulk's 旅行筆記</h1>
+                        <span class="subheading">人生就像一場旅行，不必在乎目的地，在乎的，是沿途的風景，以及看風景的心情</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 }
-
-<h2>@ViewBag.Title.</h2>
-
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     <h4>建立新的帳戶。</h4>
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+        </div>
+    </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">

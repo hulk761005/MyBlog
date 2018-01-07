@@ -23,7 +23,7 @@ namespace MyBlog.Controllers
                             b.UserName,
                             a.CreateDate
                         };
-            foreach (var item in query.ToList())
+            foreach (var item in query.OrderByDescending(a => a.CreateDate).ToList())
             {
                 var blog = new BlogViewModel()
                 {
@@ -39,13 +39,23 @@ namespace MyBlog.Controllers
         }
         public ActionResult Detail(string id)
         {
-            var result = db.Article.Find(id);
+            var query = from a in db.Article
+                        join b in db.Users on a.CreateUser equals b.Id
+                        select new
+                        {
+                            a.ID,
+                            a.Subject,
+                            a.ContentText,
+                            b.UserName,
+                            a.CreateDate
+                        };
+            var result = query.FirstOrDefault(c => c.ID == id);
             var article = new ArticleDetailViewModel()
             {
                 ID = result.ID,
                 Subject = result.Subject,
                 ContentText = result.ContentText,
-                CreateUser = result.CreateUser,
+                CreateUser = result.UserName,
                 CreateDate = result.CreateDate
             };
 
@@ -53,15 +63,11 @@ namespace MyBlog.Controllers
         }
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
-
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
-
             return View();
         }
     }
