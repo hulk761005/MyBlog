@@ -1,4 +1,6 @@
-﻿using MyBlog.Models;
+﻿using Microsoft.AspNet.Identity.Owin;
+using MyBlog.Models;
+using MyBlog.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +11,28 @@ namespace MyBlog.Controllers
 {
     public class HomeController : Controller
     {
-        ApplicationDbContext db = new ApplicationDbContext();
+        private IRepository _articleRep;
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+        public HomeController()
+        {
+            _articleRep = new ArticleRepository();
+        }
         public ActionResult Index()
         {
-            var listBlog = new List<BlogViewModel>();
-            var query = from a in db.Article
-                        join b in db.Users on a.CreateUser equals b.Id
+            var listBlog = new List<ArticleViewModel>();
+            var query = from a in _articleRep.GetAll()
+                        join b in UserManager.Users on a.CreateUser equals b.Id
                         select new
                         {
                             a.ID,
@@ -23,14 +41,14 @@ namespace MyBlog.Controllers
                             b.UserName,
                             a.CreateDate
                         };
-            foreach (var item in query.OrderByDescending(a => a.CreateDate).ToList())
+            foreach (var item in _articleRep.GetAll().ToList())
             {
-                var blog = new BlogViewModel()
+                var blog = new ArticleViewModel()
                 {
                     ID = item.ID,
                     Subject = item.Subject,
                     Summary = item.Summary,
-                    CreateUser = item.UserName,
+                    CreateUser = item.CreateUser,
                     CreateDate = item.CreateDate
                 };
                 listBlog.Add(blog);
@@ -39,8 +57,8 @@ namespace MyBlog.Controllers
         }
         public ActionResult Detail(string id)
         {
-            var query = from a in db.Article
-                        join b in db.Users on a.CreateUser equals b.Id
+            var query = from a in _articleRep.GetAll()
+                        join b in UserManager.Users on a.CreateUser equals b.Id
                         select new
                         {
                             a.ID,

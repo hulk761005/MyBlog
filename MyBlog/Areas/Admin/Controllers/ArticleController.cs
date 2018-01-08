@@ -9,12 +9,14 @@ using Microsoft.Security.Application;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using MyBlog.Repositories;
 
 namespace MyBlog.Areas.Admin.Controllers
 {
     public class ArticleController : Controller
     {
-        ApplicationDbContext db = new ApplicationDbContext();
+        private IRepository _articleRep;
+
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
         {
@@ -26,6 +28,10 @@ namespace MyBlog.Areas.Admin.Controllers
             {
                 _userManager = value;
             }
+        }
+        public ArticleController()
+        {
+            _articleRep = new ArticleRepository();
         }
         // GET: Admin/Article
         public ActionResult Index()
@@ -67,8 +73,8 @@ namespace MyBlog.Areas.Admin.Controllers
                     article.UpdateUser = user.Id;
                     article.UpdateDate = DateTime.Now;
 
-                    db.Article.Add(article);
-                    db.SaveChanges();
+                    _articleRep.Create(article);
+                    _articleRep.Commit();
                 }
 
                 return RedirectToAction("Index");
@@ -121,6 +127,11 @@ namespace MyBlog.Areas.Admin.Controllers
             {
                 return View();
             }
+        }
+        protected override void Dispose(bool disposing)
+        {
+            db.Dispose();
+            base.Dispose(disposing);
         }
     }
 }
