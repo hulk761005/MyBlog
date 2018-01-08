@@ -6,12 +6,27 @@ using System.Web.Mvc;
 using MyBlog.Areas.Admin.Models;
 using MyBlog.Models;
 using Microsoft.Security.Application;
+using Microsoft.AspNet.Identity.Owin;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 
 namespace MyBlog.Areas.Admin.Controllers
 {
     public class ArticleController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationUserManager _userManager;
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
         // GET: Admin/Article
         public ActionResult Index()
         {
@@ -32,23 +47,26 @@ namespace MyBlog.Areas.Admin.Controllers
 
         // POST: Admin/Article/Create
         [HttpPost]
-        public ActionResult Create(CreateArticleViewModel model)
+        public async Task<ActionResult> Create(CreateArticleViewModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
+                    var user = await UserManager.FindByNameAsync(User.Identity.GetUserName());
                     var article = new Article();
                     article.ID = Guid.NewGuid().ToString();
                     article.Subject = model.Subject;
                     article.Summary = model.Summary;
                     // 過濾 XSS
                     article.ContentText = Sanitizer.GetSafeHtmlFragment(model.ContentText);
+
                     article.ViewCount = 0;
-                    article.CreateUser = "27f9ede9-bb8f-4d9c-ab20-9d50e59a6567";
+                    article.CreateUser = user.Id;
                     article.CreateDate = DateTime.Now;
-                    article.UpdateUser = "27f9ede9-bb8f-4d9c-ab20-9d50e59a6567";
+                    article.UpdateUser = user.Id;
                     article.UpdateDate = DateTime.Now;
+
                     db.Article.Add(article);
                     db.SaveChanges();
                 }

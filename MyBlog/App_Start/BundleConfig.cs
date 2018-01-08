@@ -25,7 +25,7 @@ namespace MyBlog
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/vendor/bootstrap/css/bootstrap.min.css",
+                      "~/Content/bootstrap.min.css",
                       "~/Content/clean-blog.min.css"));
         }
     }
