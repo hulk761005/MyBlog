@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNet.Identity.Owin;
 using MyBlog.Models;
-using MyBlog.Repositories;
+using MyBlog.Models.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MyBlog.Models.Services;
 
 namespace MyBlog.Controllers
 {
     public class HomeController : Controller
     {
-        private IRepository _articleRep;
+        private readonly ArticleService _articleSvc;
+
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
         {
@@ -26,58 +28,16 @@ namespace MyBlog.Controllers
         }
         public HomeController()
         {
-            _articleRep = new ArticleRepository();
+            var unitOfWork = new EFUnitOfWork();
+            _articleSvc = new ArticleService(unitOfWork);
         }
         public ActionResult Index()
         {
-            var listBlog = new List<ArticleViewModel>();
-            var query = from a in _articleRep.GetAll()
-                        join b in UserManager.Users on a.CreateUser equals b.Id
-                        select new
-                        {
-                            a.ID,
-                            a.Subject,
-                            a.Summary,
-                            b.UserName,
-                            a.CreateDate
-                        };
-            foreach (var item in _articleRep.GetAll().ToList())
-            {
-                var blog = new ArticleViewModel()
-                {
-                    ID = item.ID,
-                    Subject = item.Subject,
-                    Summary = item.Summary,
-                    CreateUser = item.CreateUser,
-                    CreateDate = item.CreateDate
-                };
-                listBlog.Add(blog);
-            }
-            return View(listBlog);
+            return View(_articleSvc.LookUp().OrderByDescending(a => a.CreateDate).ToList());
         }
         public ActionResult Detail(string id)
         {
-            var query = from a in _articleRep.GetAll()
-                        join b in UserManager.Users on a.CreateUser equals b.Id
-                        select new
-                        {
-                            a.ID,
-                            a.Subject,
-                            a.ContentText,
-                            b.UserName,
-                            a.CreateDate
-                        };
-            var result = query.FirstOrDefault(c => c.ID == id);
-            var article = new ArticleDetailViewModel()
-            {
-                ID = result.ID,
-                Subject = result.Subject,
-                ContentText = result.ContentText,
-                CreateUser = result.UserName,
-                CreateDate = result.CreateDate
-            };
-
-            return View(article);
+            return View(_articleSvc.GetDetail(id));
         }
         public ActionResult About()
         {

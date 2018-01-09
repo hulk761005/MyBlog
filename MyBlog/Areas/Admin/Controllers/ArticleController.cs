@@ -9,14 +9,13 @@ using Microsoft.Security.Application;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
-using MyBlog.Repositories;
-
+using MyBlog.Models.Services;
+using MyBlog.Models.Repositories;
 namespace MyBlog.Areas.Admin.Controllers
 {
     public class ArticleController : Controller
     {
-        private IRepository _articleRep;
-
+        private readonly ArticleService _articleSvc;
         private ApplicationUserManager _userManager;
         public ApplicationUserManager UserManager
         {
@@ -31,7 +30,8 @@ namespace MyBlog.Areas.Admin.Controllers
         }
         public ArticleController()
         {
-            _articleRep = new ArticleRepository();
+            var unitOfWork = new EFUnitOfWork();
+            _articleSvc = new ArticleService(unitOfWork);
         }
         // GET: Admin/Article
         public ActionResult Index()
@@ -53,31 +53,18 @@ namespace MyBlog.Areas.Admin.Controllers
 
         // POST: Admin/Article/Create
         [HttpPost]
-        public async Task<ActionResult> Create(CreateArticleViewModel model)
+        public async Task<ActionResult> Create(ArticleCreateViewModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
                     var user = await UserManager.FindByNameAsync(User.Identity.GetUserName());
-                    var article = new Article();
-                    article.ID = Guid.NewGuid().ToString();
-                    article.Subject = model.Subject;
-                    article.Summary = model.Summary;
-                    // 過濾 XSS
-                    article.ContentText = Sanitizer.GetSafeHtmlFragment(model.ContentText);
-
-                    article.ViewCount = 0;
-                    article.CreateUser = user.Id;
-                    article.CreateDate = DateTime.Now;
-                    article.UpdateUser = user.Id;
-                    article.UpdateDate = DateTime.Now;
-
-                    _articleRep.Create(article);
-                    _articleRep.Commit();
+                    _articleSvc.Create(model, user.Id);
+                    _articleSvc.Save();
+                    return RedirectToAction("Index");
                 }
-
-                return RedirectToAction("Index");
+                return View();
             }
             catch
             {
@@ -130,7 +117,7 @@ namespace MyBlog.Areas.Admin.Controllers
         }
         protected override void Dispose(bool disposing)
         {
-            db.Dispose();
+            _articleSvc.Dispose();
             base.Dispose(disposing);
         }
     }

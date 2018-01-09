@@ -11,7 +11,7 @@ namespace MyBlog.Areas.Admin.Models
     {
 
     }
-    public class CreateArticleViewModel
+    public class ArticleCreateViewModel
     {
         [Display(Name = "標題")]
         public string Subject { get; set; }
